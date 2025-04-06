@@ -1,19 +1,34 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import Services.AuthServices;
+import Utils.DataBaseManager;
+
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/Bank";
-        String username = "root";
-        String password = "root";
-        try {
-            Connection conn = DriverManager.getConnection(url, username, password);
-            System.out.println("Connection Successful");
-            conn.close();
-        } catch (SQLException e) {
-            System.out.println(" Connection failed!");
-            e.printStackTrace();
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            int k = 0;
+            System.out.println("1. Press 1 for Sign Up");
+            System.out.println("2. Press 2 for Log in");
+            System.out.print("Enter Your Choice : ");
+            int inp = sc.nextInt();
+            switch (inp) {
+                case 1: {
+                    AuthServices.Signup();
+                    k = 1;
+                    break;
+                }
+                case 2: {
+                    AuthServices.Login();
+                    k = 1;
+                    break;
+                }
+                default: {
+                    k = 0;
+                    System.out.println("Enter a Valid input");
+                }
+            }
+            if (k == 1) return;
         }
     }
 }
