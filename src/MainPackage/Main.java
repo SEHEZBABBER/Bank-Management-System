@@ -1,12 +1,18 @@
+package MainPackage;
+
 import Services.AuthServices;
-import Utils.DataBaseManager;
 
 import java.util.Scanner;
 
 public class Main {
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         while (true) {
+            Main.clearScreen();
             int k = 0;
             System.out.println("1. Press 1 for Sign Up");
             System.out.println("2. Press 2 for Log in");
