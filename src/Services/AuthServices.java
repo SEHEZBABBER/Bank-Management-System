@@ -1,5 +1,6 @@
 package Services;
 
+import MainPackage.Main;
 import Utils.DataBaseManager;
 import Utils.LoggedInUser;
 
@@ -28,10 +29,27 @@ public class AuthServices {
             throw new RuntimeException(e);
         }
     }
-    private static boolean validateUser(String Card){
+    private static boolean validateUser(String name,String Card,long phone){
         Scanner sc = new Scanner(System.in);
         try {
             Connection conn = DataBaseManager.ConnectToDataBase();
+
+            // matching names and phone number as well
+            PreparedStatement match_name_phone = conn.prepareStatement("SELECT name,mobile_number FROM users WHERE debit_card_number = ?");
+            match_name_phone.setString(1,Card);
+            ResultSet name_phone = match_name_phone.executeQuery();
+            if(name_phone.next()){
+                String name_db = name_phone.getString("name");
+                long phone_db = name_phone.getLong("mobile_number");
+                if(!name_db.equals(name))return false;
+                if(phone_db != phone)return false;
+            }
+            else{
+                return false;
+            }
+
+
+
             PreparedStatement pstmt = conn.prepareStatement("SELECT atm_pin FROM users WHERE debit_card_number = ?");
             pstmt.setString(1, Card);
             ResultSet rs = pstmt.executeQuery();
@@ -307,11 +325,15 @@ public class AuthServices {
             }
         }
 
-        if(validateUser(card)){
+        if(validateUser(name,card,num)){
             saveToLoggedInUser(card);
             clearScreen();
             System.out.println("✅ Logged in successfully!");
             Home.menu();
+        }
+        else {
+            System.out.println(" Credentailas Mismatched ");
+            Main.main(new String[0]);
         }
 
     }
