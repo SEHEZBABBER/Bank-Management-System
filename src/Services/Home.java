@@ -3,7 +3,6 @@ package Services;
 import MainPackage.Main;
 import Utils.DataBaseManager;
 import Utils.LoggedInUser;
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
 import java.sql.*;
 import java.util.InputMismatchException;
@@ -203,8 +202,9 @@ public class Home {
     }
     private static void showTransactions(){
         try {
-            PreparedStatement transactions = conn.prepareStatement("SELECT * FROM transactions WHERE sender_debit_card_number = ?");
+            PreparedStatement transactions = conn.prepareStatement("SELECT * FROM transactions WHERE sender_debit_card_number = ? OR receiver_debit_card_number = ? ");
             transactions.setString(1, LoggedInUser.getDebitCardNumber());
+            transactions.setString(2,LoggedInUser.getDebitCardNumber());
             ResultSet rs = transactions.executeQuery();
 
             System.out.println("=== Transaction History ===");
@@ -214,7 +214,7 @@ public class Home {
                 double before = rs.getDouble("sender_balance_before");
                 double after = rs.getDouble("sender_balance_after");
                 double amount = rs.getDouble("amount_sent");
-
+                System.out.println("From : " + sender);
                 System.out.println("To: " + receiver);
                 System.out.println("Sent: ₹" + amount);
                 System.out.println("Balance Before: ₹" + before);
